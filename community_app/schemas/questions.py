@@ -15,7 +15,7 @@ class QuestionResponse(BaseModel):
         from_attributes = True
 
 
-class CategoryCreate(BaseModel):
+class CategoryCreateUpdate(BaseModel):
     name: str = Field(..., min_length=3, max_length=100)
 
 

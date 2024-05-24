@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request, make_response
 from pydantic import ValidationError
 
 from community_app.models.questions import Category
-from community_app.schemas.questions import CategoryCreate, CategoryResponse
+from community_app.schemas.questions import CategoryCreateUpdate, CategoryResponse
 from community_app import db
 
 categories_bp = Blueprint('categories', __name__, url_prefix='/categories')
@@ -31,7 +31,7 @@ def add_new_category():
     data = request.get_json()
 
     try:
-        category_data = CategoryCreate(**data)
+        category_data = CategoryCreateUpdate(**data)
     except ValidationError as err:
         return make_response(jsonify(err.errors()), 400)
 
@@ -64,7 +64,12 @@ def update_category_by_pk(category_id):
     request_data = request.get_json()
 
     if 'name' in request_data:
-        category.name = request_data["name"]
+        try:
+            category_data = CategoryCreateUpdate(name=request_data['name'])
+        except ValidationError as err:
+            return make_response(jsonify(err.errors()), 400)
+
+        category.name = category_data.name
 
         db.session.commit()
 

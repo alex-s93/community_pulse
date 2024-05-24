@@ -96,14 +96,13 @@ def get_question_by_id(question_id):
             }
         ), 404)
 
-    question_data = {
-        "id": question.id,
-        "text": question.text,
-        "category_id": question.category_id,
-        "created_at": question.created_at
-    }
-
-    return make_response(jsonify(question_data), 200)
+    return make_response(
+        jsonify(QuestionResponse(
+            id=question.id,
+            text=question.text,
+            category_id=question.category_id
+        ).dict()), 200
+    )
 
 
 @questions_bp.route('/update/<int:question_id>', methods=['PUT'])  # 127.0.0.1:5000/questions/update/5
